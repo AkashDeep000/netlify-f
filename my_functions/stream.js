@@ -14,9 +14,9 @@ exports.handler = async function (event, context) {
 
   const requestYTDLStream = (url) => new Promise(async (resolve, reject) => {
     const stream = ytdl(url, {
-    //  filter: 'audioonly',
-    quality: "lowestaudio",
-    
+      //  filter: 'audioonly',
+      quality: "lowestaudio",
+
       dlChunkSize: 0,
     });
     stream.pipe(await fs.createWriteStream(`/tmp/audio.mp3`))
@@ -29,7 +29,8 @@ exports.handler = async function (event, context) {
   return {
     statusCode: 200,
     headers: {
-      "Content-Type": "audio/mp3",
+      "Content-Type": "audio/",
+        "Cache-Control": "s-maxage=2592000, max-age=86400",
     },
     body: stream.toString("base64"),
     isBase64Encoded: true,
