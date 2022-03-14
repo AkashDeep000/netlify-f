@@ -25,11 +25,11 @@ console.log(extention)
       filter: 'audioonly',
       format: resFormat,
     });
-    stream.pipe(await fs.createWriteStream(`./audio.${extention}`))
+    stream.pipe(await fs.createWriteStream(`/tmp/audio.${extention}`))
     stream.on("finish", () => resolve(stream)).on("error", err => reject(err));
   });
   await requestYTDLStream(url)
-  const stream = fs.readFileSync(`./audio.${extention}`)
+  const stream = fs.readFileSync(`/tmp/audio.${extention}`)
   console.log(stream)
 
   return {
