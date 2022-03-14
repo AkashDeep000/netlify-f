@@ -14,7 +14,9 @@ exports.handler = async function (event, context) {
 
   const requestYTDLStream = (url) => new Promise(async (resolve, reject) => {
     const stream = ytdl(url, {
-      filter: 'audioonly',
+    //  filter: 'audioonly',
+    quality: "lowestaudio",
+    
       dlChunkSize: 0,
     });
     stream.pipe(await fs.createWriteStream(`/tmp/audio.mp3`))
