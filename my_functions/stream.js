@@ -8,22 +8,23 @@ exports.handler = async function (event, context) {
   
   let resFormat = "mp3";
   let extention = "mp3";
+  
   if (format === "m4a" || "m4r") {
     resFormat = 'm4a';
     extention = format;
   } else if (format === "mp3") {
     resFormat = 'mp3';
-      extention = format;
+    extention = format;
   }
   
 console.log(extention)
   const requestYTDLStream = (url) => new Promise(async (resolve, reject) => {
     const stream = ytdl(url, {
       //filter: format => format.container === container,
-      quality: 'lowestaudio',
       // dlChunkSize: 0,
       filter: 'audioonly',
       format: resFormat,
+      quality: 'lowestaudio',
     });
     stream.pipe(await fs.createWriteStream(`/tmp/audio.${extention}`))
     stream.on("finish", () => resolve(stream)).on("error", err => reject(err));
