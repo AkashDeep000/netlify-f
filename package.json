@@ -1,0 +1,24 @@
+{
+  "name": "netlify-f",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AkashDeep000/netlify-f.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AkashDeep000/netlify-f/issues"
+  },
+  "homepage": "https://github.com/AkashDeep000/netlify-f#readme",
+  "dependencies": {
+    "ytdl-core": "^4.11.0",
+    "ytsr": "^3.6.0"
+  }
+}
