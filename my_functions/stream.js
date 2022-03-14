@@ -13,7 +13,7 @@ exports.handler = async function (event, context) {
     resFormat = 'm4a';
     extention = format;
   } else if (format === "mp3") {
-    resFormat = 'mp3';
+    resFormat = 'm4a';
     extention = format;
   }
   
