@@ -29,8 +29,8 @@ exports.handler = async function (event, context) {
   return {
     statusCode: 200,
     headers: {
-      "Content-Type": "audio/",
-        "Cache-Control": "s-maxage=2592000, max-age=86400",
+      "Content-Type": "audio/mp3",
+      "Cache-Control": "s-maxage=2592000, max-age=86400",
     },
     body: stream.toString("base64"),
     isBase64Encoded: true,
