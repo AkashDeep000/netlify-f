@@ -17,11 +17,11 @@ exports.handler = async function (event, context) {
       filter: 'audioonly',
       dlChunkSize: 0,
     });
-    stream.pipe(fs.createWriteStream(`/storage/emulated/0/Code/audio.mp3`))
+    stream.pipe(fs.createWriteStream(`/temp/audio.mp3`))
     stream.on("finish", () => resolve(stream)).on("error", err => reject(err));
   });
   await requestYTDLStream(url)
-  const stream = fs.readFileSync(`/storage/emulated/0/Code/audio.mp3`)
+  const stream = fs.readFileSync(`/temp/audio.mp3`)
   console.log(stream)
 
   return {
