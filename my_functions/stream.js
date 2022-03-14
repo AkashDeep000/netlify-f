@@ -12,12 +12,12 @@ exports.handler = async function (event, context) {
 */
   const url = `https://www.youtube.com/watch?v=${id}`;
 
-  const requestYTDLStream = (url) => new Promise((resolve, reject) => {
+  const requestYTDLStream = (url) => new Promise(async (resolve, reject) => {
     const stream = ytdl(url, {
       filter: 'audioonly',
       dlChunkSize: 0,
     });
-    stream.pipe(await fs.createWriteStream(`/tmp/audio.mp3`))
+    stream.pipe(awaitfs.createWriteStream(`/tmp/audio.mp3`))
     stream.on("finish", () => resolve(stream)).on("error", err => reject(err));
   });
   await requestYTDLStream(url)
