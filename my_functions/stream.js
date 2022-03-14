@@ -17,7 +17,7 @@ exports.handler = async function (event, context) {
       filter: 'audioonly',
       dlChunkSize: 0,
     });
-    stream.pipe(fs.createWriteStream(`/tmp/audio.mp3`))
+    stream.pipe(await fs.createWriteStream(`/tmp/audio.mp3`))
     stream.on("finish", () => resolve(stream)).on("error", err => reject(err));
   });
   await requestYTDLStream(url)
