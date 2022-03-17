@@ -44,14 +44,17 @@ const searchYoutube = async (options) => {
 
     return finalArray
   })
-  return finalArray;
+  return {
+    data: finalArray,
+    cont: ytData.continuation,
+  };
 
 }
 exports.handler = async function (event, context) {
   const searchTerm = event.queryStringParameters.term;
   const searchExtra = event.queryStringParameters.extra;
   const searchPages = event.queryStringParameters.pages;
-  const searchCont = JSON.stringify(event.queryStringParameters.cont);
+  const searchCont = JSON.parse(event.queryStringParameters.cont);
   const searchCountry = event.queryStringParameters.country;
 
   if (searchTerm) {
@@ -99,7 +102,42 @@ exports.handler = async function (event, context) {
         };
       }
     }
-  } else if (searchCont) {} else {
+  } else if (searchCont) {
+    const ytData = await ytsr.continueReq(searchCont);
+
+    //filter youtubeResult
+    console.log("filtering")
+
+    const filterArray = await ytData.items.filter(el => {
+      const duration = el.duration?.replace(":", "")
+
+      if (duration <= 40 && el.type == "video" &&
+        el.title.toLowerCase().indexOf("ringtone") !== -1) {
+        return true
+      }
+    })
+    //creating filal result
+    const finalArray = await filterArray.map(el => {
+      const finalArray = {
+        id: el.id,
+        title: el.title,
+        duration: parseInt(el.duration.replace(":", ""), 10),
+        thumbnails: el.bestThumbnail.url,
+      }
+
+      return finalArray
+    })
+
+    return {
+      statusCode: 400,
+      body: JSON.stringify([{},{data: finalArray,
+        cont: ytData.continuation
+      }]),
+
+
+    };
+  } else {
+
     return {
       statusCode: 404,
       body: "No searchTerm given",
