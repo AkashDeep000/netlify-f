@@ -54,7 +54,10 @@ exports.handler = async function (event, context) {
   const searchTerm = event.queryStringParameters.term;
   const searchExtra = event.queryStringParameters.extra;
   const searchPages = event.queryStringParameters.pages;
-  const searchCont = JSON.parse(event.queryStringParameters.cont);
+  if (event.queryStringParameters.cont) {
+    const searchCont = JSON.parse(event.queryStringParameters.cont);
+  }
+
   const searchCountry = event.queryStringParameters.country;
 
   if (searchTerm) {
@@ -129,10 +132,12 @@ exports.handler = async function (event, context) {
     })
 
     return {
-      statusCode: 400,
-      body: JSON.stringify([{},{data: finalArray,
-        cont: ytData.continuation
-      }]),
+      statusCode: 200,
+      body: JSON.stringify([{},
+        {
+          data: finalArray,
+          cont: ytData.continuation,
+        }]),
 
 
     };
