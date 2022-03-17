@@ -16,7 +16,11 @@ const searchYoutube = async (options) => {
     ...(searchCountry ? {
       gl: searchCountry
     }: {}),
-    pages: searchPages,
+    ...(searchPages ? {
+      pages: searchPages
+    }: {
+      pages: 1
+    }),
   });
 
   //filter youtubeResult
@@ -24,7 +28,7 @@ const searchYoutube = async (options) => {
   const filterArray = await ytData.items.filter(el => {
     const duration = el.duration?.replace(":", "")
 
-    if (duration <= 60 && el.type == "video" &&
+    if (duration <= 40 && el.type == "video" &&
       el.title.toLowerCase().indexOf("ringtone") !== -1) {
       return true
     }
@@ -46,7 +50,7 @@ const searchYoutube = async (options) => {
 exports.handler = async function (event, context) {
   const searchTerm = event.queryStringParameters.term;
   const searchExtra = event.queryStringParameters.extra;
-  const searchPages = event.queryStringParameters.searchPages;
+  const searchPages = event.queryStringParameters.pages;
   const searchCont = JSON.stringify(event.queryStringParameters.cont);
   const searchCountry = event.queryStringParameters.country;
 
@@ -95,13 +99,10 @@ exports.handler = async function (event, context) {
         };
       }
     }
-  } else if (searchCont) {
-    
-  }
-  else {
+  } else if (searchCont) {} else {
     return {
-          statusCode: 404,
-          body: "No searchTerm given",
-        };
+      statusCode: 404,
+      body: "No searchTerm given",
+    };
   }
 }
