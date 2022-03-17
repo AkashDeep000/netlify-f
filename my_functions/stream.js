@@ -26,21 +26,25 @@ console.log(extention)
       format: resFormat,
       quality: 'lowestaudio',
     });
-    stream.pipe(await fs.createWriteStream(`/tmp/audio.${extention}`))
+    stream.pipe(await fs.createWriteStream(`./audio.${extention}`))
     stream.on("finish", () => resolve(stream)).on("error", err => reject(err));
   });
   await requestYTDLStream(url)
-  const stream = fs.readFileSync(`/tmp/audio.${extention}`)
+  const stream = fs.readFileSync(`./audio.${extention}`)
+  const stats = await fs.statSync(`./audio.${extention}`)
+  const fileSizeInBytes = stats.size;
   console.log(stream)
 
   return {
     statusCode: 200,
     headers: {
       "Content-Type": `audio/${extention}`,
+      "Content-Length": fileSizeInBytes,
       "Content-Disposition": `attachment; filename="audio.${extention}"`,
-     "Cache-Control": "s-maxage=2592000, max-age=86400",
+ //    "Cache-Control": "s-maxage=2592000, max-age=86400",
     },
-    body: stream.toString("base64"),
+   body: stream.toString("base64"),
+  //  body: base64.b64encode(stream),
     isBase64Encoded: true,
   };
 }

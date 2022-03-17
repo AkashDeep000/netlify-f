@@ -1,49 +1,107 @@
 import ytsr from "ytsr"
+import extraInfo from "../dataFetch/extraInfo"
 
+const searchYoutube = async (options) => {
+  const {
+    searchTerm,
+    searchCountry,
+    searchPages
+  } = options;
+  const filter = await ytsr.getFilters(`"ringtone" + ${searchTerm}`);
+  const filter1 = await filter.get('Type').get('Video');
+  const filter2 = await ytsr.getFilters(filter1.url);
+  const filter3 = await filter2.get('Duration').get('Under 4 minutes');
+
+  const ytData = await ytsr(filter3.url, {
+    ...(searchCountry ? {
+      gl: searchCountry
+    }: {}),
+    pages: searchPages,
+  });
+
+  //filter youtubeResult
+  console.log("filtering")
+  const filterArray = await ytData.items.filter(el => {
+    const duration = el.duration?.replace(":", "")
+
+    if (duration <= 60 && el.type == "video" &&
+      el.title.toLowerCase().indexOf("ringtone") !== -1) {
+      return true
+    }
+  })
+  //creating filal result
+  const finalArray = await filterArray.map(el => {
+    const finalArray = {
+      id: el.id,
+      title: el.title,
+      duration: parseInt(el.duration.replace(":", ""), 10),
+      thumbnails: el.bestThumbnail.url,
+    }
+
+    return finalArray
+  })
+  return finalArray;
+
+}
 exports.handler = async function (event, context) {
-  const searchTerm = event.queryStringParameters.term
-  const searchCont = event.queryStringParameters.cont
+  const searchTerm = event.queryStringParameters.term;
+  const searchExtra = event.queryStringParameters.extra;
+  const searchPages = event.queryStringParameters.searchPages;
+  const searchCont = JSON.stringify(event.queryStringParameters.cont);
+  const searchCountry = event.queryStringParameters.country;
 
   if (searchTerm) {
-    try {
-      const firstResultBatch = await ytsr(searchTerm, {
-        pages: 1
-      });
-      return {
-        statusCode: 200,
-        body: JSON.stringify(firstResultBatch),
-      };
-    } catch (e) {
-      return {
-        statusCode: 404,
-        body: JSON.stringify({
-          error: e
-        }),
+    if (searchExtra == "true") {
+      try {
+        const dataYt = searchYoutube({
+          searchTerm: searchTerm,
+          searchCountry: searchCountry,
+          searchPages: searchPages
+        })
+        const dataExtra = extraInfo({
+          searchTerm: searchTerm,
+          searchCountry: searchCountry,
+        })
+        const data = await Promise.all([dataExtra, dataYt])
+        return {
+          statusCode: 200,
+          body: JSON.stringify(data),
+        };
+      } catch (e) {
+        console.log(e);
+        return {
+          statusCode: 404,
+          body: e,
+        };
+      }
+    } else {
+      try {
+        const dataYt = await searchYoutube({
+          searchTerm: searchTerm,
+          searchCountry: searchCountry,
+          searchPages: searchPages
+        })
+        const data = [{},
+          dataYt]
+        return {
+          statusCode: 200,
+          body: JSON.stringify(data),
+        };
+      } catch (e) {
+        console.log;
+        return {
+          statusCode: 404,
+          body: e,
+        };
       }
     }
   } else if (searchCont) {
-    try {
-      const contResultBatch = await ytsr.continueReq(JSON.parse(searchCont));
-      return {
-        statusCode: 200,
-        body: JSON.stringify(contResultBatch),
-      };
-    } catch (e) {
-      return {
-        statusCode: 404,
-        body: JSON.stringify({
-          error: e
-        }),
-      }
-    }
-  } else {
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        error: "no search term on continuation id found"
-      }),
-    }
+    
   }
-
-
+  else {
+    return {
+          statusCode: 404,
+          body: "No searchTerm given",
+        };
+  }
 }
