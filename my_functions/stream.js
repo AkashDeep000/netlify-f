@@ -26,12 +26,12 @@ exports.handler = async function (event, context) {
       filter: 'audioonly',
       format: resFormat,
       quality: 'lowestaudio',
-    }).pipe(fs.createWriteStream(`./audio.${extention}`))
+    }).pipe(fs.createWriteStream(`/tmp/audio.${extention}`))
     stream.on("close", () => resolve(stream)).on("error", err => reject(err));
   });
   await requestYTDLStream(url)
-  const stream = await fs.readFileSync(`./audio.${extention}`)
-  const stats = await fs.statSync(`./audio.${extention}`)
+  const stream = await fs.readFileSync(`/tmp/audio.${extention}`)
+  const stats = await fs.statSync(`/tmp/audio.${extention}`)
   const fileSizeInBytes = stats.size;
   console.log(stream)
 
