@@ -1,6 +1,7 @@
 # netlify.toml
 [build]
 functions = "my_functions/"
+included_files = ["ffmpeg-static/**"]
 
 [[redirects]]
   from = '/api/*'
