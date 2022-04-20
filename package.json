@@ -19,6 +19,8 @@
   "homepage": "https://github.com/AkashDeep000/netlify-f#readme",
   "dependencies": {
     "axios": "^0.26.1",
+    "chmod": "^0.2.1",
+    "ncp": "^2.0.0",
     "youtube-music-api": "^1.0.6",
     "ytdl-core": "^4.11.0",
     "ytsr": "^3.6.0"

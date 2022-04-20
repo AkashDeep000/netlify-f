@@ -1,3 +1,7 @@
 # Local Netlify folder
 .netlify
 node_modules
+ffmpeg-static/manpages
+ffmpeg-static/model
+ffmpeg-static/ffprobe
+ffmpeg-static/qt-faststart
