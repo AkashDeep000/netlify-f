@@ -1,7 +1,12 @@
 # netlify.toml
 [build]
 functions = "my_functions/"
+[functions]
+node_bundler = "esbuild"
 included_files = ["ffmpeg-static/ffmpeg"]
+
+[build.environment]
+FLUENTFFMPEG_COV = 0
 
 [[redirects]]
 from = '/api/*'

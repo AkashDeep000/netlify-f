@@ -14,7 +14,7 @@ new Promise((resolve, reject) => {
    */
   // ncp will copy the whole directory to /tmp/ffmpeg
   ncp(
-    path.join(__dirname, "./ffmpeg-static"),
+    path.join(__dirname, "../ffmpeg-static"),
     "/tmp/ffmpeg",
     {
       clobber: false, // Do not overwrite if already exists (Lambda sometimes re-uses the container)
