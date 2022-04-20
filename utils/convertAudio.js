@@ -3,7 +3,7 @@ const exec = execImport.execFile
 import ncp from "ncp";
 import path from "path";
 import chmod from "chmod";
-const __dirname = path.resolve();
+//const __dirname = path.resolve();
 const convertAudio = async (input, output, codec) =>
 new Promise((resolve, reject) => {
   let start = Date.now();
