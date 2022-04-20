@@ -5,10 +5,10 @@ exports.handler = async function (event, context) {
   const format = event.queryStringParameters.format;
   // const quality = event.queryStringParameters.quality;
   const url = `https://www.youtube.com/watch?v=${id}`;
-  
+
   let resFormat = "mp3";
   let extention = "mp3";
-  
+
   if (format === "m4a" || "m4r") {
     resFormat = 'm4a';
     extention = format;
@@ -16,8 +16,9 @@ exports.handler = async function (event, context) {
     resFormat = 'm4a';
     extention = format;
   }
-  
-console.log(extention)
+
+  console.log(extention)
+
   const requestYTDLStream = (url) => new Promise(async (resolve, reject) => {
     const stream = ytdl(url, {
       //filter: format => format.container === container,
@@ -25,12 +26,11 @@ console.log(extention)
       filter: 'audioonly',
       format: resFormat,
       quality: 'lowestaudio',
-    });
-    stream.pipe(await fs.createWriteStream(`./audio.${extention}`))
-    stream.on("finish", () => resolve(stream)).on("error", err => reject(err));
+    }).pipe(fs.createWriteStream(`./audio.${extention}`))
+    stream.on("close", () => resolve(stream)).on("error", err => reject(err));
   });
   await requestYTDLStream(url)
-  const stream = fs.readFileSync(`./audio.${extention}`)
+  const stream = await fs.readFileSync(`./audio.${extention}`)
   const stats = await fs.statSync(`./audio.${extention}`)
   const fileSizeInBytes = stats.size;
   console.log(stream)
@@ -41,10 +41,10 @@ console.log(extention)
       "Content-Type": `audio/${extention}`,
       "Content-Length": fileSizeInBytes,
       "Content-Disposition": `attachment; filename="audio.${extention}"`,
- //    "Cache-Control": "s-maxage=2592000, max-age=86400",
+      //    "Cache-Control": "s-maxage=2592000, max-age=86400",
     },
-   body: stream.toString("base64"),
-  //  body: base64.b64encode(stream),
+    body: stream.toString("base64"),
+    //  body: base64.b64encode(stream),
     isBase64Encoded: true,
   };
 }
