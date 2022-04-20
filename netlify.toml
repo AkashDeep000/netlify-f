@@ -5,9 +5,6 @@ functions = "my_functions/"
 node_bundler = "esbuild"
 included_files = ["ffmpeg-static/ffmpeg"]
 
-[build.environment]
-FLUENTFFMPEG_COV = 0
-
 [[redirects]]
 from = '/api/*'
 to = '/.netlify/functions/:splat'
